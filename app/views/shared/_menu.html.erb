@@ -1,0 +1,35 @@
+<% provide :main_menu do %>
+<header>
+<nav>
+    <ul>
+      <li>
+        <%= link_to "Home", root_path %>
+      </li>
+      <li>
+        <%= link_to "Questions", questions_path %>
+      </li>
+      <li>
+        <%= link_to "New questions", new_question_path %>
+      </li>
+      <% if user_sign_in? %>
+        <li>
+          <%= link_to "Edit profile", edit_user_path(current_user) %>
+        </li>
+        <li>
+          <%= current_user.name_or_email %>
+        </li>
+        <li>
+          <%= link_to "Logout", sessions_path, data: {turbo_method: :delete} %>
+        </li>
+      <% else %>
+      <li>
+        <%= link_to "Registration", new_user_path %>
+      </li>
+      <li>
+        <%= link_to "Login", new_sessions_path %>
+      </li>
+      <% end %>
+    </ul>
+  </nav>
+</header>
+<% end %>

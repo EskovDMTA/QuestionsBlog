@@ -1,0 +1,26 @@
+<% provide :page_title, "Question"%>
+<% currently_at "New questions"%>
+
+<%= pagination @pagy %>
+<h1><%= @question.title %></h1>
+<h2><%= @question.body %></h2>
+<%= link_to "destroy", question_path(@question), data: {
+                    turbo_method: "delete",
+                    turbo_confirm: "Are you sure?"
+                  }%>
+<%= link_to "edit", edit_question_path(@question)%>
+
+<h1>Add answer</h1>
+<%= form_with model: [@question, @answer] do |f| %>
+<%= f.text_field :body%>
+<%= f.submit %>
+<% end %> 
+
+<% @answers.each do |answer|%>
+
+<% end %>
+<%= render partial: "answers/answer", collection: @answers, as: :answer, locals: {question: @question}%><br>
+<%= pagination @pagy %>
+
+
+

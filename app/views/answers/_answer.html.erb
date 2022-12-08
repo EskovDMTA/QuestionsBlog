@@ -1,0 +1,11 @@
+
+<div id="answer-<%=answer.id %>">
+    <%= sanitize answer.body %><br>
+    <%= answer.created_at %><br>
+    <%= link_to "Delete", question_answer_path(question, answer), data: {
+                    turbo_method: "delete",
+                    turbo_confirm: "Are you sure?"
+                  } %><br>
+    <%= link_to "Edit", edit_question_answer_path(question, answer) %> <br>
+</div>
+

@@ -1,0 +1,5 @@
+<h1>Edit question</h1>
+<%= form_with model: [@question, @answer] do |f| %>
+<%= f.text_field :body%>
+<%= f.submit %>
+<% end %>

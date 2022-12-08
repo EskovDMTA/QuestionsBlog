@@ -1,0 +1,18 @@
+<% provide :page_title, "Login"%>
+<% currently_at "Questions"%>
+<h1>Login</h1>
+
+<%= form_with url: sessions_path do |f| %>
+    <%= f.label :email %><br>
+    <%= f.email_field :email %><br>
+    <%= f.label :password %><br>
+    <%= f.password_field :password %><br>
+    <%= f.label :password_confirmation %><br>
+    <%= f.password_field :password_confirmation %><br>
+    <%= f.check_box :remember_me, value: "1" %>
+    <%= f.label :remember_me, value: "1" %><br>
+    <%= f.submit "Login" %><br>
+
+<% end %>
+
+<%= params %>
