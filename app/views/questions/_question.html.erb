@@ -1,0 +1,20 @@
+
+    <div><%= image_tag(question.user.gravatar) %></div>
+    
+    <h3>
+        <%= question.title %>
+        </a>
+    </h3>
+    <h5>
+        <%= question.body %>
+    </h5>
+    <time datetime="<%= question.formatted_created_at %>">
+        <%= question.formatted_created_at %>
+    </time><br>
+    <h6>
+        <%=question.user.name_or_email %>
+        </h6>
+        <div>
+        <%= render question.tags%></div>
+        <p>
+        <%= link_to "Show",  question_path(question)%></p>

@@ -5,5 +5,7 @@
     <%= f.text_field :title %> <br>
     <%= f.label :body %>
     <%= f.text_area :body %> <br>
+    <%= f.label :tags %> <br>
+    <%= f.collection_select :tag_ids, tags, :id, :title, {}, multiple: true %>
     <%= f.submit %>
 <% end %>

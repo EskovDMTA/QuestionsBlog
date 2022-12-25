@@ -1,17 +1,27 @@
 class User < ApplicationRecord
-    attr_accessor :old_password, :remember_token
+  enum role: { basic: 0, moderator: 1, admin: 2 }, _suffix: :role
+
+  before_save :set_gravatar_hash, if: :email_changed?
+
+  attr_accessor :old_password, :remember_token, :admin_edit
+  has_secure_password validations: false
+  has_many :questions, dependent: :destroy
+  has_many :answers, dependent: :destroy
+  validate :password_presence
+  validate :correct_old_password, on: :update, if: -> { password.present? && !admin_edit }
+  validates :password, confirmation: true, allow_blank: true,
+    length: {minimum: 8, maximum: 70}
   
-    has_secure_password validations: false
-  
-    validate :password_presence
-    validate :correct_old_password, on: :update, if: -> { password.present? }
-    validates :password, confirmation: true, allow_blank: true,
-      length: {minimum: 8, maximum: 70}
-    
-    validates :email, presence: true, uniqueness: true
-    validate :password_complexity
-  
-    private
+  validates :email, presence: true, uniqueness: true
+  validate :password_complexity
+
+  private
+
+    def set_gravatar_hash
+      return unless email.present?
+      hash = Digest::MD5.hexdigest email.strip.downcase
+      self.gravatar_hash = hash
+    end
   
     def correct_old_password
       return if BCrypt::Password.new(password_digest_was).is_password?(old_password)

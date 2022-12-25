@@ -4,19 +4,5 @@
 <h1>SuperQuestions</h1>
 
 <%= pagination @pagy %>
-
-<% @questions.each do |q| %>
-    <h3>
-        <%= q.title %>
-        </a>
-    </h3>
-    <h5>
-        <%= q.body %>
-    </h5>
-    <time datetime="<%= q.formatted_created_at %>">
-        <%= q.formatted_created_at %>
-    </time><br>
-        <p>
-        <%= link_to "Show",  question_path(q)%></p>
-<% end %>
+<%= render @questions %>
 <%= pagination @pagy %>
