@@ -1,6 +1,11 @@
 class QuestionsController < ApplicationController
+  before_action :require_authentication, except: %i[index show]
   before_action :find_question!, only: %i[edit update destroy show] 
   before_action :fetch_tags, only: %i[new edit]
+  before_action :authorize_question!
+  after_action :verify_authorized
+  
+
 
   def index
     @pagy, @questions = pagy Question.all_by_tags(params[:tag_ids])
@@ -48,6 +53,10 @@ class QuestionsController < ApplicationController
   end
 
   private
+
+  def authorize_question!
+    authorize(@question || Question)
+  end
 
   def question_params
     params.require(:question).permit(:title, :body, tag_ids: [])

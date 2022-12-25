@@ -17,6 +17,10 @@ class User < ApplicationRecord
 
   private
 
+    def author?(obj)
+      obj.user == self
+    end
+
     def set_gravatar_hash
       return unless email.present?
       hash = Digest::MD5.hexdigest email.strip.downcase
