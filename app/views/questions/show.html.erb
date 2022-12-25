@@ -4,6 +4,9 @@
 <%= pagination @pagy %>
 <h1><%= @question.title %></h1>
 <h2><%= @question.body %></h2>
+<h3><%= @question.user.name_or_email %></h3>
+<h3><%= image_tag @question.user.gravatar %></h3>
+<%=render "comments/commentable", commentable: @question, comment: @comment, html_id: "questionComments" %>
 <%= link_to "destroy", question_path(@question), data: {
                     turbo_method: "delete",
                     turbo_confirm: "Are you sure?"
