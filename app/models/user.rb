@@ -15,49 +15,46 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validate :password_complexity
 
-  private
+  def guest?
+    false
+  end
 
-    def author?(obj)
-      obj.user == self
-    end
+  def author?(obj)
+    obj.user == self
+  end
 
-    def set_gravatar_hash
-      return unless email.present?
-      hash = Digest::MD5.hexdigest email.strip.downcase
-      self.gravatar_hash = hash
-    end
+  def set_gravatar_hash
+    return unless email.present?
+    hash = Digest::MD5.hexdigest email.strip.downcase
+    self.gravatar_hash = hash
+  end
+
+  def correct_old_password
+    return if BCrypt::Password.new(password_digest_was).is_password?(old_password)
+
+    errors.add :old_password, 'is incorrect'
+  end
+
+  def password_complexity
+    # Regexp extracted from https://stackoverflow.com/questions/19605150/regex-for-password-must-contain-at-least-eight-characters-at-least-one-number-a
+    return if password.blank? || password =~ /(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])/
+
+    errors.add :password, 'complexity requirement not met. Length should be 8-70 characters and include: 1 uppercase, 1 lowercase, 1 digit and 1 special character'
+  end
+
+  def password_presence
+    errors.add(:password, :blank) unless password_digest.present?
+  end
+  def remember_me
+    self.remember_token = SecureRandom.urlsafe_base64
+    update_column :remember_token_digest, digest(token)
+  end
   
-    def correct_old_password
-      return if BCrypt::Password.new(password_digest_was).is_password?(old_password)
-  
-      errors.add :old_password, 'is incorrect'
-    end
-  
-    def password_complexity
-      # Regexp extracted from https://stackoverflow.com/questions/19605150/regex-for-password-must-contain-at-least-eight-characters-at-least-one-number-a
-      return if password.blank? || password =~ /(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])/
-  
-      errors.add :password, 'complexity requirement not met. Length should be 8-70 characters and include: 1 uppercase, 1 lowercase, 1 digit and 1 special character'
-    end
-  
-    def password_presence
-      errors.add(:password, :blank) unless password_digest.present?
-    end
-
-    def remember_me
-      self.remember_token = SecureRandom.urlsafe_base64
-      update_column :remember_token_digest, digest(token)
-    end
-    
-
-    def remember_token_authenticated?(remember_token)
-      BCrypt::Password.new(remember_token_digest).is_password?(remember_token)
-    end
-
-    def digest(string)
-      cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
-      BCrypt::Password.create(string, cost: cost)
-    end
-
-
+  def remember_token_authenticated?(remember_token)
+    BCrypt::Password.new(remember_token_digest).is_password?(remember_token)
+  end
+  def digest(string)
+    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
+    BCrypt::Password.create(string, cost: cost)
+  end
 end

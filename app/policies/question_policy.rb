@@ -8,7 +8,7 @@ class QuestionPolicy < ApplicationPolicy
     end
 
     def create?
-        user.present?
+        !user.guest?
     end
 
     def update?
